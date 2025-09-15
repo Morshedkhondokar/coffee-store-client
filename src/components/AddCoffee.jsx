@@ -4,17 +4,23 @@ const AddCoffee = () => {
         e.preventDefault()
 
         const form = e.target;
-        const name = form.name.value;
-        const chef = form.chef.value;
-        const supplier = form.supplier.value;
-        const taste = form.taste.value;
-        const category = form.category.value;
-        const details = form.details.value;
-        const photo = form.photo.value;
+        const formData = new FormData(form)
+        const newCoffeeData = Object.fromEntries(formData.entries())
+        console.log(newCoffeeData)
 
-        console.log(name,chef,supplier,taste,category,details,photo)
-
-        form.reset()
+        // send coffee data to server
+        fetch('http://localhost:3000/coffees',{
+            method:"POST",
+            headers:{
+                "content-type": "application/json"
+            },
+            body:JSON.stringify(newCoffeeData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+        })
+        // form.reset()
     }
 
   return (
@@ -41,12 +47,12 @@ const AddCoffee = () => {
           </fieldset>
 
           <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4 ">
-            <label className="label">Chef</label>
+            <label className="label">Quantity</label>
             <input
               type="text"
-              name="chef"
+              name="quantity"
               className="input w-full"
-              placeholder="Chef Name"
+              placeholder="Quantity Name"
             />
           </fieldset>
 
