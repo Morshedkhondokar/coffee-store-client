@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
+import AuthContext from "../context/AuthContext";
 
 const Users = () => {
   const initialUsers = useLoaderData();
@@ -23,6 +24,7 @@ const Users = () => {
         })
           .then((res) => res.json())
           .then((data) => {
+            // delete user in mongoDB
             if (data.deletedCount) {
                 const reaminingUsers = users.filter(user => user._id !== id);
                 setUsers(reaminingUsers)
@@ -53,7 +55,7 @@ const Users = () => {
                 <h2>No</h2>
               </th>
               <th>Name</th>
-              <th>Job</th>
+              <th>Phone</th>
               <th>email</th>
               <th></th>
             </tr>
@@ -80,11 +82,7 @@ const Users = () => {
                   </div>
                 </td>
                 <td>
-                  Zemlak, Daniel and Leannon
-                  <br />
-                  <span className="badge badge-ghost badge-sm">
-                    Desktop Support Technician
-                  </span>
+                  {user.phone}
                 </td>
                 <td>{user.email}</td>
                 <th>
