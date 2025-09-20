@@ -1,9 +1,43 @@
-import React from 'react';
+import React, { use } from 'react';
+import AuthContext from '../context/AuthContext';
 
 const SignIn = () => {
+  const {signInUser} = use(AuthContext);
 
     const handleSignIn = (e) =>{
-        e.preventDEfault()
+        e.preventDefault()
+
+        const form = e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        console.log(email,password)
+
+        // SignIn in firebase
+        signInUser(email,password)
+        .then(result =>{
+          console.log(result)
+          const signInInfo = {
+            email,
+            lastSignInTime: result.user?.metadata?.lastSignInTime
+          }
+
+          // update lastSignInTime to the database
+          fetch('http://localhost:3000/users',{
+            method: 'PATCH',
+            headers:{
+              'content-type': 'application/json'
+            },
+            body: JSON.stringify(signInInfo)
+          })
+          .then(res => res.json())
+          .then(data => {
+            console.log( "after update patch ",data)
+          })
+
+        })
+        .catch(error=> {
+          console.log(error)
+        })
     } 
 
     return (
@@ -11,30 +45,8 @@ const SignIn = () => {
       <h1 className="text-5xl font-bold">SIgnIn now!</h1>
       <div className="card-body">
         <form onSubmit={handleSignIn} className="fieldset">
-          <label className="label">Name</label>
-          <input type="text" className="input" name="name" placeholder="Name" />
-          <label className="label">Address</label>
-          <input
-            type="text"
-            className="input"
-            name="address"
-            placeholder="Address"
-          />
-          <label className="label">Phone</label>
-          <input
-            type="text"
-            className="input"
-            name="phone"
-            placeholder="Number"
-          />
-          <label className="label">Photo</label>
-          <input
-            type="text"
-            className="input"
-            name="photo"
-            placeholder="Photo URL"
-          />
-
+          
+          
           <label className="label">Email</label>
           <input
             type="email"
